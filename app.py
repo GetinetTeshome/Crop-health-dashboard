@@ -1,29 +1,37 @@
 import streamlit as st
 import ee
-import geemap.foliumap as geemap
+import folium
+from streamlit_folium import folium_static
 import datetime
+import json
 
-# 1. Initialize Google Earth Engine
-# Note: In production, you will use a Service Account key for seamless user access.
+# 1. Initialize Google Earth Engine using Streamlit Secrets
 try:
-    ee.Initialize()
+    secret_creds = st.secrets["gcp_service_account"]
+    creds_dict = json.loads(json.dumps(secret_creds))
+    ee_creds = ee.ServiceAccountCredentials(
+        creds_dict['client_email'], 
+        key_data=creds_dict['private_key']
+    )
+    ee.Initialize(ee_creds)
 except Exception as e:
-    st.error("EE Authentication required. Please run 'earthengine authenticate' in your terminal.")
+    st.error(f"Failed to authenticate with Google Earth Engine: {e}")
+    st.info("Please make sure your 'gcp_service_account' keys are filled in your Streamlit Advanced Secrets.")
     st.stop()
 
-# Set up Streamlit Web Interface
+# Configure the Streamlit Page Layout
 st.set_page_config(layout="wide")
 st.title("🇪🇹 Automated NDVI Crop-Health Dashboard")
-st.write("Lightweight satellite monitoring for Ethiopian Smallholder Cooperatives.")
+st.write("Lightweight satellite monitoring optimized for local Ethiopian administrative regions.")
 
-# 2. Sidebar Controls for the User
+# 2. Interactive Sidebar Controls
 st.sidebar.header("Select Region & Date")
 region_select = st.sidebar.selectbox(
     "Target Area",
     ["Oromia (Bale Zone Wheat)", "Amhara (Teff Region)", "Sidama (Coffee Zones)"]
 )
 
-# Set coordinates based on selection
+# Geographic coordinates mapping for regional centers
 regions = {
     "Oromia (Bale Zone Wheat)": [39.90, 7.10],
     "Amhara (Teff Region)": [37.70, 11.60],
@@ -31,54 +39,51 @@ regions = {
 }
 coords = regions[region_select]
 
-# Date selection (Sentinel-2 data available from 2015-present)
-start_date = st.sidebar.date_input("Start Date", datetime.date(2026, 1, 1))
+start_date = st.sidebar.date_input("Start Date", datetime.date(2025, 9, 1))
 end_date = st.sidebar.date_input("End Date", datetime.date(2026, 5, 30))
 
-# 3. Cloud-Based Satellite Processing Function
-def get_ndvi_map(lon, lat, start, end):
-    # Create a point geometry and buffer it to simulate a cooperative boundary
+# 3. Direct Map URL Processing Pipeline
+def get_ndvi_tile_url(lon, lat, start, end):
     point = ee.Geometry.Point([lon, lat])
-    aoi = point.buffer(5000) # 5km radius area of interest
+    aoi = point.buffer(5000) # Creates a 5km cluster buffer around your centerpoint
     
-    # Pull Sentinel-2 Level-2A (Bottom-of-Atmosphere corrected) imagery
     s2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED') \
         .filterBounds(aoi) \
         .filterDate(start.strftime('%Y-%m-%d'), end.strftime('%Y-%m-%d')) \
         .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20)) \
-        .median() # Take the median to remove fleeting clouds
+        .median()
         
-    # Calculate NDVI: (NIR - Red) / (NIR + Red)
-    # Sentinel-2: Band 8 is NIR, Band 4 is Red
     ndvi = s2.normalizedDifference(['B8', 'B4']).rename('NDVI')
     
-    return ndvi, aoi
+    ndvi_vis = {
+        'min': 0.0,
+        'max': 0.8,
+        'palette': ['#d73027', '#f46d43', '#fdae61', '#fee08b', '#d9ef8b', '#a6d96a', '#66bd63', '#1a9850']
+    }
+    
+    map_id_dict = ee.Image(ndvi.clip(aoi)).getMapId(ndvi_vis)
+    return map_id_dict['tile_fetcher'].url_format
 
-# 4. Process and Render Map
+# 4. Interface Rendering Trigger
 if st.button("Generate Crop Health Analysis"):
-    with st.spinner("Fetching Sentinel-2 cloud data..."):
+    with st.spinner("Processing cloud assets from Sentinel-2..."):
         try:
-            ndvi_image, aoi_geom = get_ndvi_map(coords[0], coords[1], start_date, end_date)
+            tile_url = get_ndvi_tile_url(coords[0], coords[1], start_date, end_date)
             
-            # Create interactive Leaflet map centered at our region
-            Map = geemap.Map(center=[coords[1], coords[0]], zoom=12)
+            m = folium.Map(location=[coords[1], coords[0]], zoom_start=12, tiles="OpenStreetMap")
             
-            # Define simple visual parameters (Red = Bare soil/Dead, Yellow = Stressed, Green = Healthy)
-            ndvi_vis = {
-                'min': 0.0,
-                'max': 0.8,
-                'palette': ['#d73027', '#f46d43', '#fdae61', '#fee08b', '#d9ef8b', '#a6d96a', '#66bd63', '#1a9850']
-            }
+            folium.TileLayer(
+                tiles=tile_url,
+                attr='Google Earth Engine / Copernicus',
+                name='NDVI Crop Health',
+                overlay=True,
+                control=True
+            ).add_to(m)
             
-            # Add layers to the map data structure
-            Map.addLayer(ndvi_image.clip(aoi_geom), ndvi_vis, 'Crop Health (NDVI)')
+            st.success(f"Showing metrics for {region_select}")
+            folium_static(m, width=950, height=550)
             
-            # Render map on the Streamlit web front-end
-            st.success(f"Showing health metrics for {region_select}")
-            Map.to_streamlit(height=600)
-            
-            # Helpful context for Extension Agents
-            st.info("💡 **How to interpret:** Deep Green zones indicate dense, healthy vegetative growth. Yellow-to-Red patches indicate moisture stress, pest damage, or clear soil.")
+            st.info("💡 **Interpretation Guide:** Deep Green zones show healthy crop density. Shifting into Yellow or Red highlights areas with severe moisture deficiencies or potential pest outbreaks.")
             
         except Exception as e:
-            st.error(f"No clear imagery found for this date range. Try broadening your dates. Error: {e}")
+            st.error(f"Could not load telemetry maps for these parameters: {e}")
