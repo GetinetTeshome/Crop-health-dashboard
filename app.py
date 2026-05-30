@@ -3,15 +3,16 @@ import ee
 import folium
 from streamlit_folium import folium_static
 import datetime
-import json
 
 # 1. Initialize Google Earth Engine using Streamlit Secrets
 try:
+    # Streamlit secrets can be read directly like a normal dictionary
     secret_creds = st.secrets["gcp_service_account"]
-    creds_dict = json.loads(json.dumps(secret_creds))
+    
+    # Pass the credentials directly to Earth Engine without JSON conversions
     ee_creds = ee.ServiceAccountCredentials(
-        creds_dict['client_email'], 
-        key_data=creds_dict['private_key']
+        secret_creds["client_email"], 
+        key_data=secret_creds["private_key"]
     )
     ee.Initialize(ee_creds)
 except Exception as e:
