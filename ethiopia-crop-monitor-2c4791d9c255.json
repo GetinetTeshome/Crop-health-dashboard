@@ -1,13 +1,1 @@
-{
-  "type": "service_account",
-  "project_id": "ethiopia-crop-monitor",
-  "private_key_id": "2c4791d9c255b6cb96f1025e729f9f9c6f5e97a4",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDszhxSEQ9SVzvX\ntE57Lzmp6o5PDYfZSZ56TzyBgUUBcl86J/zH1weuEIy9JGX4lCZFtUe/yrfIev+Y\nKSRgFkgTBqF6e+zFL+muDjdrsls7O0gBqykPj/c6rpJ1jiRPgJx2/nUqEyYRSKPb\n+4GKE5SFi18ewNbmphNvAFFVKxlGB9gh2c+CWdpas2jaWxYR5nm2AStdxHGGuPJD\naex+QbNBBo5VLbuBL08sc5DCxBQoXIDiVt5WnZRGNr77EpBjOPWn2x0endSJJRsy\nmloQD1d9QRRBfX4C1H42csqThGS5xOm1csquDWwAlG+nbImb47tLJpZcEHCOXs6d\nWQAaCCpvAgMBAAECggEABBEYGGq1libsXqx4ipIJjfr6va3QTvF+OMCCnADB1CAI\nNaH5K99sANfE6vykiavVqm3OESOkm1tNZ2oRd1r6muUKweU98Db97uDMn9tcyLwg\nZPLxDhTdXJMh7cXmprzhMwP0tCfHCBX0xnLfyyTB8Lcvh4ItTqG8hLP/MZS/Zt30\nKVtHdWdVrmWjvH9v27qPxkYt3D10cRhyAD+pnuHU/NqepUIsXNd0vGtlOUBBWfUf\n/IMiwKN90AOUnE64G88lMlVX/80tgnq+h3wU3IKkuSwMbfAubcekfAptoCUUGW1s\n4ey6M5tB5tRIsKd7IllsqAY+lgKNUB7oF1g4xKffeQKBgQD7Q1RsosPj2dPNz1Vr\nYbpZtyNk7RPj9jZduLgIAGoHO7nL6jx068d+0mqUHZ6cG5q8fNDnMeuuTC6+NVCL\n4HlT19zMDlJ1Ia4MVJL5XeSdEV+CU4H75e/nEwzP3fkAAzl7fb6GaXuK7z7+tnZu\nCqIdld5NMIBoLeu3ydTVJQs5+QKBgQDxRQC1ZdS4lUV5k3SVYix3JeKihVD7Eoan\nCQI2tMiTac9uoOPxK8tOuyDWSSVU+TOB1b6KlcxLTnDx5lKVgarRlS/wlwVcEf+H\nXbglFP6pobnbLEefPGEPwt0grWxncPAfUzN/q9fu7DdprUE3PeGD51hL13ygKc+A\nTtbSZC5hpwKBgQDvKMs3DEZAnpnIEE1SBJeHxZXe/vorxbNByg0BMMO7VtImkjIx\naCtfP5FKolbSaEQEnRmKti2KneDwE3czbNqPP6xeXlOGQiSUf/vVd9We22Z5elsD\nFX4gCDXttW7I4EjajnnHHqgFOmxPrgVUALMGThxmhH/0qaDwMyBuMPBaoQKBgDv0\np85sNcaA4bjqmcgdk2swcPduJceevPN5W6F4n3dyjeex97MQ7P7tpaVam/pXyyLy\nmN0biJ8WKR8T22XnySk356fj/6L3ngZnlcExTG+fDu6WPF4nxP8Dr6vVLOEvwZwn\nMt8BNzHaZZLPSSuPJyF+NgTy0beDbFs4PE4gMx51AoGBAKH+Gv/A+6r7ct5qE3OX\npFcgpZ53Fm94HzTLy2mzaSsFYDpQSmWW4h8KytDn/Y370IAWktgjR3nxadGb6EvK\nrCIZH2drVqgl/RAM42boweuIyWD4awyQD5z2fPOf5HNxhrixPRcwq2uk+bY7fXAa\nADcuvzs0GY4okqfO57w91VJX\n-----END PRIVATE KEY-----\n",
-  "client_email": "streamlit-ee-worker@ethiopia-crop-monitor.iam.gserviceaccount.com",
-  "client_id": "101880659907607289380",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/streamlit-ee-worker%40ethiopia-crop-monitor.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-}
+
