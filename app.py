@@ -7,7 +7,7 @@ import json
 
 # 1. Initialize Google Earth Engine using Streamlit Secrets
 try:
-    # Safely pull credentials from your Streamlit Secrets dashboard
+    # Safely pull the service account credentials from your Streamlit Secrets panel
     secret_creds = st.secrets["gcp_service_account"]
     
     # Format and pass keys directly into Earth Engine credentials manager
@@ -19,10 +19,10 @@ try:
     ee.Initialize(ee_creds)
 except Exception as e:
     st.error(f"Failed to authenticate with Google Earth Engine: {e}")
-    st.info("Double-check your 'gcp_service_account' key formats inside your Streamlit App Secrets.")
+    st.info("Please make sure your 'gcp_service_account' keys are properly filled in your Streamlit Advanced Secrets.")
     st.stop()
 
-# Configure the Streamlit Page Structure
+# Configure the Streamlit Page Layout
 st.set_page_config(layout="wide")
 st.title("🇪🇹 Automated NDVI Crop-Health Dashboard")
 st.write("Lightweight satellite monitoring optimized for local Ethiopian administrative regions.")
