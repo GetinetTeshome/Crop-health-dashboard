@@ -6,13 +6,15 @@ import datetime
 
 # 1. Initialize Google Earth Engine using Streamlit Secrets
 try:
-    # Streamlit secrets can be read directly like a normal dictionary
     secret_creds = st.secrets["gcp_service_account"]
     
-    # Pass the credentials directly to Earth Engine without JSON conversions
+    # FIX: Convert literal "\n" text strings into real cryptographic line breaks
+    raw_key = secret_creds["private_key"]
+    clean_key = raw_key.replace("\\n", "\n")
+    
     ee_creds = ee.ServiceAccountCredentials(
         secret_creds["client_email"], 
-        key_data=secret_creds["private_key"]
+        key_data=clean_key
     )
     ee.Initialize(ee_creds)
 except Exception as e:
